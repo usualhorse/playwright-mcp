@@ -37,7 +37,7 @@ const evaluate = defineTool({
 
   handle: async (context, params, response) => {
     const tab = await context.ensureTab();
-    response.setIncludeSnapshot();
+    // response.setIncludeSnapshot();
 
     // Handle element evaluation
     if (params.ref && params.element) {
