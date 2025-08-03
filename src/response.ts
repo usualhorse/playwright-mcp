@@ -25,7 +25,6 @@ export class Response {
   private _includeSnapshot = false;
   private _includeTabs = false;
   private _snapshot: string | undefined;
-  private _truncateParams: { maxTokens: number; pageNum?: number } | undefined;
 
   readonly toolName: string;
   readonly toolArgs: Record<string, any>;
@@ -68,17 +67,19 @@ export class Response {
     this._includeTabs = true;
   }
 
-  setTruncateParams(params: { maxTokens: number; pageNum?: number }) {
-    this._truncateParams = params;
-  }
 
   async snapshot(): Promise<string> {
     if (this._snapshot !== undefined)
       return this._snapshot;
-    if (this._includeSnapshot && this._context.currentTab())
-      this._snapshot = await this._context.currentTabOrDie().captureSnapshot(this._truncateParams);
-    else
+    if (this._includeSnapshot && this._context.currentTab()) {
+      // Handle truncate params internally based on config and tool args
+      const maxTokens = this._context.config.truncateSnapshot;
+      const pageNum = this.toolArgs.page || 1;
+      const truncateParams = maxTokens > 0 ? { maxTokens, pageNum } : undefined;
+      this._snapshot = await this._context.currentTabOrDie().captureSnapshot(truncateParams);
+    } else {
       this._snapshot = '';
+    }
     return this._snapshot;
   }
 

@@ -34,14 +34,7 @@ const snapshot = defineTool({
 
   handle: async (context, params, response) => {
     await context.ensureTab();
-
-    const maxTokens = context.config.truncateSnapshot;
-    const pageNum = params.page || 1;
-
     response.setIncludeSnapshot();
-    if (maxTokens > 0)
-      response.setTruncateParams({ maxTokens, pageNum });
-
   },
 });
 
