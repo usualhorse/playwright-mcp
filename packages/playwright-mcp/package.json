@@ -33,9 +33,12 @@
   },
   "dependencies": {
     "playwright": "1.59.0-alpha-1771104257000",
-    "playwright-core": "1.59.0-alpha-1771104257000"
+    "playwright-core": "1.59.0-alpha-1771104257000",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
   "bin": {
-    "playwright-mcp": "cli.js"
+    "playwright-mcp": "cli.js",
+    "playwright-mcp-stealth": "stealth-cli.js"
   }
 }
