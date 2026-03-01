@@ -15,5 +15,30 @@
  * limitations under the License.
  */
 
+const { chromium } = require('playwright-extra');
+const stealth = require('puppeteer-extra-plugin-stealth')();
+chromium.use(stealth);
+
 const { createConnection } = require('playwright/lib/mcp/index');
-module.exports = { createConnection };
+
+/**
+ * Enhanced createConnection that uses playwright-extra with the stealth plugin.
+ */
+async function createStealthConnection(config = {}, contextGetter) {
+  // If no contextGetter is provided, we provide one that uses stealth
+  const stealthContextGetter = contextGetter || (async () => {
+    // We use the config to determine launch options if needed
+    const launchOptions = {
+      headless: config.browser?.launchOptions?.headless !== false,
+      ...config.browser?.launchOptions
+    };
+    return await chromium.launchPersistentContext(config.browser?.userDataDir || '', {
+      ...launchOptions,
+      ...config.browser?.contextOptions
+    });
+  });
+
+  return createConnection(config, stealthContextGetter);
+}
+
+module.exports = { createConnection: createStealthConnection };
